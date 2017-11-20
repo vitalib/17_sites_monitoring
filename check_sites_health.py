@@ -5,9 +5,9 @@ import whois
 
 
 def load_urls4check(path):
-    with open(path) as domains_file:
-        for domain_address in domains_file:
-            yield domain_address.strip()
+    with open(path) as urls_file:
+        for url in urls_file:
+            yield url.strip()
 
 
 def is_server_respond_with_200(url):
@@ -18,7 +18,7 @@ def is_server_respond_with_200(url):
 def get_domain_expiration_date(domain_name):
     domain_info = whois.whois(domain_name)
     expiry_date = domain_info.expiration_date
-    if type(expiry_date) == list:
+    if isinstance(expiry_date, list):
         return expiry_date[0]
     return expiry_date
 
@@ -32,13 +32,13 @@ def get_arguments():
 if __name__ == '__main__':
     args = get_arguments()
     path_to_file_with_urls = args.filepath
-    domains_for_check = load_urls4check(path_to_file_with_urls)
-    for domain_name in domains_for_check:
-        print(domain_name)
+    urls_for_check = load_urls4check(path_to_file_with_urls)
+    for url in urls_for_check:
+        print(url)
         print('\tHTTP response status is 200:',
-              'ok' if is_server_respond_with_200(domain_name) else 'False'
+              'ok' if is_server_respond_with_200(url) else 'False'
               )
-        expiry_date = get_domain_expiration_date(domain_name)
+        expiry_date = get_domain_expiration_date(url)
         if expiry_date:
             prepaid_period = (expiry_date - datetime.now()).days
             print('\tDomain prepaid one month ahead:', end=' ')
